@@ -1,0 +1,16 @@
+{
+  "name": "Force.com-Metadata-Tool",
+  "version": "0.1.0",
+  "scripts": {
+    "preinstall": "npm i -g grunt-cli"
+  },
+  "dependencies": {
+    "grunt-jasmine-task": "~0.2.3"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.0rc5",
+    "grunt-contrib-jshint": "~0.1.1rc5",
+    "grunt-contrib-concat": "~0.1.2rc5",
+    "grunt-contrib-watch": "~0.2.0rc5"
+  }
+}

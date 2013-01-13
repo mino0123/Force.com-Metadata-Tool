@@ -1,0 +1,1 @@
+})(unsafeWindow, jQuery);
