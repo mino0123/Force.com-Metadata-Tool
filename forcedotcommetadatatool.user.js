@@ -1528,22 +1528,22 @@ globalTabList.$.on('refresh', function () {
     }
 });
 
-var RawDeploy;
+var DeployRetrieve;
 
-RawDeploy = MetadataTool.RawDeploy = {};
-RawDeploy.$ = $(RawDeploy);
+DeployRetrieve = MetadataTool.DeployRetrieve = {};
+DeployRetrieve.$ = $(DeployRetrieve);
 
-RawDeploy.$.on('run', function () {
+DeployRetrieve.$.on('run', function () {
     this.$.trigger('render');
 });
-RawDeploy.renderer = Hogan.compile(Template.RawDeploy);
-RawDeploy.$.on('render', function () {
+DeployRetrieve.renderer = Hogan.compile(Template.DeployRetrieve);
+DeployRetrieve.$.on('render', function () {
     if (!this.el) {
         this.el = $(this.renderer.render(this));
     }
     Panel.append(this.el);
 });
-RawDeploy.$.on('remove', function () {
+DeployRetrieve.$.on('remove', function () {
     if (this.el) {
         this.el.remove();
     }
@@ -1583,9 +1583,9 @@ doc
 
 globalTabList.tabs.push(
     new Tab('rd', 'Retrieve/Deploy', function () {
-        RawDeploy.$.trigger('run');
+        DeployRetrieve.$.trigger('run');
     }, function () {
-        RawDeploy.$.trigger('remove');
+        DeployRetrieve.$.trigger('remove');
     })
 );
 })(unsafeWindow, jQuery);
