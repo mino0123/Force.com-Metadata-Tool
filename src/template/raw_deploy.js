@@ -1,4 +1,4 @@
-Template.RawDeploy =
+Template.DeployRetrieve =
     '<div class="mt-deploy-panel">' +
     '    <table>' +
     '        <tr>' +
