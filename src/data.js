@@ -1,6 +1,6 @@
 var Data;
 
-Data = MetadataTool.Data = MetadataTool.Data = {
+Data = MetadataTool.Data = {
     data: {
         global: null,
         sobjects: {},
