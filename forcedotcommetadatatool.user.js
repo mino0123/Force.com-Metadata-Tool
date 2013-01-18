@@ -711,7 +711,7 @@ Data = MetadataTool.Data = {
                     req.deployOptions.rollbackOnError = true;
                 }
                 sforce.metadata.deploy(req, waitForDone(function (result) {
-                    console.log(result);
+                    callback(result);
                 }));
             }
         });
