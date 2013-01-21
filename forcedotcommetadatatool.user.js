@@ -496,23 +496,6 @@ ScriptLoader.on('loaded', function () {
         .on('click', '#phHeaderLogoImage, #AppPageLogo', function () {
             MetadataTool.$.trigger('run');
         });
-    setTripleClick(doc, '.mt-sod-table', function () {
-        unsafeWindow.getSelection().selectAllChildren($('.mt-sod-table')[0]);
-    });
-    function setTripleClick($el, selector, fn) {
-        var counter = 0;
-        function clearCounter() {
-            counter = 0;
-        }
-        $el.on('click', selector, function () {
-            counter++;
-            if (counter === 3) {
-                fn();
-                clearCounter();
-            }
-            setTimeout(clearCounter, 500);
-        });
-    }
 });
 
 
@@ -1392,6 +1375,26 @@ doc
         FieldConfigurator.$.trigger('change');
     });
 
+
+ScriptLoader.on('loaded', function () {
+    function setTripleClick($el, selector, fn) {
+        var counter = 0;
+        function clearCounter() {
+            counter = 0;
+        }
+        $el.on('click', selector, function () {
+            counter++;
+            if (counter === 3) {
+                fn();
+                clearCounter();
+            }
+            setTimeout(clearCounter, 500);
+        });
+    }
+    setTripleClick(doc, '.mt-sod-table', function () {
+        unsafeWindow.getSelection().selectAllChildren($('.mt-sod-table')[0]);
+    });
+});
 var DescribeMetadata;
 
 DescribeMetadata = MetadataTool.DescribeMetadata = {};
