@@ -1,6 +1,6 @@
 {
   "name": "Force.com-Metadata-Tool",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "scripts": {
     "preinstall": "npm i -g grunt-cli"
   },

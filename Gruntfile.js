@@ -10,7 +10,7 @@ module.exports = function (grunt) {
                     '// ==UserScript==\n' +
                     '// @id             ForceDotComMetadataTool\n' +
                     '// @name           ForceDotComMetadataTool\n' +
-                    '// @version        0.1\n' +
+                    '// @version        0.0.1\n' +
                     '// @namespace      \n' +
                     '// @author         minoaw\n' +
                     '// @description    \n' +

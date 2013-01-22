@@ -1,7 +1,7 @@
 // ==UserScript==
 // @id             ForceDotComMetadataTool
 // @name           ForceDotComMetadataTool
-// @version        0.1
+// @version        0.0.1
 // @namespace      
 // @author         minoaw
 // @description    
