@@ -48,4 +48,27 @@ describe("core", function () {
             expect(r[1][2]).to.equal(undefined);
         });
     });
+    describe("SimpleElement", function () {
+        var el;
+        before(function () {
+            el = SimpleElement('<div>SimpleElement</div>');
+        });
+        describe("show", function () {
+            before(function () {
+                el.trigger('show');
+            });
+            it("bodyに追加される", function () {
+                expect(el.parent()[0]).to.equal(document.body);
+            });
+            it("表示される", function () {
+                expect(el.css('display')).to.equal('block');
+            });
+        });
+        describe("hide", function () {
+            it("隠れる", function () {
+                el.trigger('hide');
+                expect(el.css('display')).to.equal('none');
+            });
+        });
+    });
 });
