@@ -53,12 +53,21 @@ module.exports = function (grunt) {
                 ],
                 tasks: ['default']
             }
+        },
+        mocha: {
+            index: {
+                src: ['test/index.html'],
+                options: {
+                    run: true
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.registerTask('default', ['jshint:beforeconcat', 'concat', 'jshint:afterconcat']);
+    grunt.loadNpmTasks('grunt-mocha');
+    grunt.registerTask('default', ['mocha', 'jshint:beforeconcat', 'concat', 'jshint:afterconcat']);
 
 };
