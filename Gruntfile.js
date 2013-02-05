@@ -61,9 +61,17 @@ module.exports = function (grunt) {
                     run: true
                 }
             }
+        },
+        screenshot: {
+            options: grunt.file.readJSON('.screenshot'),
+                     //{loginUrl, username, password, targetUrl}
+            dist: {
+                dest: 'README.md'
+            }
         }
     });
 
+    grunt.loadTasks('tasks');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
