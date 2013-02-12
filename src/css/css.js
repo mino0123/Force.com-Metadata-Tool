@@ -126,6 +126,7 @@ GM_addStyle(
     '}' +
     '.mt-table-cell {' +
     '    border: 1px dotted #CCC;' +
+    '    padding: 2px 3px;' +
     '}'+
 
     '.mt-deploy-panel input[type=text] {' +
