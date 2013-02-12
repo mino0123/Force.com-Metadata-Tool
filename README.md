@@ -8,7 +8,9 @@ Scriptish スクリプトです。
 0. [forcedotcommetadatatool.user.js](https://raw.github.com/mino0123/Force.com-Metadata-Tool/master/forcedotcommetadatatool.user.js)をインストール
 
 ### 使い方
-インストール後、SalesforceにログインしてからVisualforce以外の画面で左上のロゴをクリックすることで使用できます。
+インストール後、Salesforceにログインしてから画面左上のロゴをクリックすることで使用できます。
+
+※Visualforce画面では使用できません。
 
 ![click target](img/click_target.png)
 
