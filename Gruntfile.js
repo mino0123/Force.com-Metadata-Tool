@@ -68,6 +68,18 @@ module.exports = function (grunt) {
             dist: {
                 dest: 'README.md'
             }
+        },
+        copy: {// copy to scriptish_scripts folder
+            main: {
+                files: (function () {
+                    try {
+                        return [grunt.file.readJSON('.copy')];
+                    } catch (e) {
+                        grunt.log.warn(e);
+                        return [];
+                    }
+                }())
+            }
         }
     });
 
@@ -75,7 +87,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-mocha');
-    grunt.registerTask('default', ['mocha', 'jshint:beforeconcat', 'concat', 'jshint:afterconcat']);
+
+    var defaults = ['mocha', 'jshint:beforeconcat', 'concat', 'jshint:afterconcat'];
+    if (grunt.config.data.copy.main.files.length > 0) {
+        defaults.push('copy');
+    }
+    grunt.registerTask('default', defaults);
 
 };
