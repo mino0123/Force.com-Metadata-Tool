@@ -126,6 +126,7 @@ GM_addStyle(
     '}' +
     '.mt-table-cell {' +
     '    border: 1px dotted #CCC;' +
+    '    padding: 2px 3px;' +
     '}'+
 
     '.mt-deploy-panel input[type=text] {' +
@@ -138,5 +139,10 @@ GM_addStyle(
     '#mt-deploy-meta {' +
     '    width: 1000px;' +
     '    height: 300px;' +
+    '}' +
+
+    '.mt-test-log {' +
+    '    margin-left: 10px;' +
+    '    border: 1px solid #ccc;' +
     '}'
 );
