@@ -139,5 +139,10 @@ GM_addStyle(
     '#mt-deploy-meta {' +
     '    width: 1000px;' +
     '    height: 300px;' +
+    '}' +
+
+    '.mt-test-log {' +
+    '    margin-left: 10px;' +
+    '    border: 1px solid #ccc;' +
     '}'
 );

@@ -158,6 +158,7 @@ GM_addStyle(
     '}' +
     '.mt-table-cell {' +
     '    border: 1px dotted #CCC;' +
+    '    padding: 2px 3px;' +
     '}'+
 
     '.mt-deploy-panel input[type=text] {' +
@@ -170,6 +171,11 @@ GM_addStyle(
     '#mt-deploy-meta {' +
     '    width: 1000px;' +
     '    height: 300px;' +
+    '}' +
+
+    '.mt-test-log {' +
+    '    margin-left: 10px;' +
+    '    border: 1px solid #ccc;' +
     '}'
 );
 var Template = {};
@@ -379,6 +385,24 @@ Template.TabList =
     '    {{/tabs}}' +
     '</ul>';
 
+Template.TestRunner =
+    '<table class="mt-table">' +
+    '    <tr class="mt-table-head">' +
+    '        <td>Id</td>' +
+    '        <td>Name</td>' +
+    '    </tr>' +
+    '    {{#classes}}' +
+    '    <tr>' +
+    '        <td class="mt-table-cell">{{Id}}</td>' +
+    '        <td class="mt-table-cell">{{Name}}</td>' +
+    '        <td class="mt-table-cell"><a href="/{{Id}}">view</a></td>' +
+    '        <td class="mt-table-cell"><a href="javascript:void 0;" class="test_run" data-id="{{Id}}" >run</a></td>' +
+    '    </tr>' +
+    '    {{/classes}}' +
+    '</table>';
+Template.TestRunnerLog =
+    '<pre class="mt-test-log">{{log}}</pre>';
+
 var doc,
     MetadataTool,
     SimpleElement,
@@ -518,7 +542,8 @@ Data = MetadataTool.Data = {
         global: null,
         sobjects: {},
         describeMetadata: null,
-        metadataList: {}
+        metadataList: {},
+        classes: null
     },
     supportMetadata: null,
     setHook: function (obj, name, fn) {
@@ -715,6 +740,53 @@ Data = MetadataTool.Data = {
                 }));
             }
         });
+    },
+    getApexClasses: function (args) {
+        var data = this.data,
+            classes = this.data,
+            callback;
+        if (data.classes) {
+            args.onSuccess(classes);
+        } else {
+            callback = this.createCallback(args, function (qr) {
+                data.classes = qr.getArray('records');
+                return data.classes;
+            });
+            sforce.connection.query('SELECT Id, Name FROM ApexClass', callback);
+        }
+    },
+    getTestQueueItem: function (args) {
+        var id = args.id,
+            soql = 'SELECT Status, ExtendedStatus FROM ApexTestQueueItem WHERE Id = \'' + id + '\'',
+            callback;
+        callback = this.createCallback({onSuccess: function (qr) {
+            var r = qr.getArray('records')[0];
+            if (r && ['Completed', 'Failed', 'Aborted'].indexOf(r.Status) >= 0) {
+                args.onSuccess(qr);
+            } else {
+                setTimeout(query, 2000);
+            }
+        }});
+        function query() {
+            sforce.connection.query(soql, callback);
+        }
+        query();
+    },
+    getTestLog: function (args) {
+        var queueItemId = args.queueItemId,
+            soql = 'SELECT ApexLogId FROM ApexTestResult WHERE QueueItemId = \'' + queueItemId + '\'',
+            callback;
+        sforce.connection.query(soql, this.createCallback({
+            onSuccess: function (qr) {
+                if (qr.getInt('size') <= 0) {
+                    args.onSuccess(null);
+                } else {
+                    var logId = qr.getArray('records')[0].ApexLogId;
+                    $.get('/apexdebug/traceDownload.apexp', {id: logId}, args.onSuccess);
+                }
+            }
+        }));
+        query();
     }
 };
 var GeneralTableView;
@@ -1427,6 +1499,85 @@ globalTabList.tabs.push(
     )
 );
 
+var TestRunner;
+
+TestRunner = MetadataTool.TestRunner = {};
+TestRunner.$ = $(TestRunner);
+
+TestRunner.$.on('run', function () {
+    var that = this;
+    Data.getApexClasses({onSuccess: function (classes) {
+        that.classes = classes;
+        that.$.trigger('render');
+    }});
+});
+TestRunner.$.on('render', function () {
+    if (!this.el) {
+        this.el = $(this.renderer.render(this));
+    }
+    this.el.appendTo(this.container);
+    this.container.appendTo(Panel);
+});
+TestRunner.$.on('remove', function () {
+    this.el.remove();
+    this.logEl.remove();
+    this.container.remove();
+});
+TestRunner.$.on('runtest', function (event, classId) {
+    var that = this,
+        item = new sforce.SObject('ApexTestQueueItem');
+    item.ApexClassId = classId;
+    console.log(this.logEl);
+    if (this.logEl) {
+        this.logEl.remove();
+        delete this.logEl;
+    }
+    sforce.connection.create([item], function (results) {
+        that.$.trigger('checkstatus', results[0].id);
+    });
+});
+TestRunner.$.on('checkstatus', function (event, queueItemId) {
+    var that = this;
+    Data.getTestQueueItem({id: queueItemId, onSuccess: function (qr) {
+        var record = qr.getArray('records')[0];
+        if (record.Status in {'Completed':1, 'Failed':1}) {
+            that.$.trigger('showtestlog', queueItemId);
+        }
+    }});
+});
+TestRunner.$.on('showtestlog', function (event, queueItemId) {
+    var that = this;
+    Data.getTestLog({queueItemId: queueItemId, onSuccess: function (log) {
+        that.$.trigger('renderlog', log);
+    }});
+});
+TestRunner.$.on('renderlog', function (event, log) {
+    if (this.logEl) {
+        this.logEl.remove();
+    }
+    this.logEl = $(this.logrenderer.render({log: log}));
+    this.container.append(this.logEl);
+});
+
+TestRunner.container = $('<div></div>')
+    .css('display', 'box')
+    .css('display', '-moz-box');
+TestRunner.renderer = Hogan.compile(Template.TestRunner);
+TestRunner.logrenderer = Hogan.compile(Template.TestRunnerLog);
+
+globalTabList.tabs.push(
+    new Tab('tr', 'Test', function () {
+            TestRunner.$.trigger('run');
+        }, function () {
+            TestRunner.$.trigger('remove');
+        }
+    )
+);
+
+Panel.on('click', '.test_run', function (event) {
+    var id = $(this).data('id');
+    TestRunner.$.trigger('runtest', id);
+});
 var ListMetadata;
 
 ListMetadata = MetadataTool.ListMetadata = {};

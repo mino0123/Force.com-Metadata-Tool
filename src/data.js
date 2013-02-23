@@ -5,7 +5,8 @@ Data = MetadataTool.Data = {
         global: null,
         sobjects: {},
         describeMetadata: null,
-        metadataList: {}
+        metadataList: {},
+        classes: null
     },
     supportMetadata: null,
     setHook: function (obj, name, fn) {
@@ -202,5 +203,52 @@ Data = MetadataTool.Data = {
                 }));
             }
         });
+    },
+    getApexClasses: function (args) {
+        var data = this.data,
+            classes = this.data,
+            callback;
+        if (data.classes) {
+            args.onSuccess(classes);
+        } else {
+            callback = this.createCallback(args, function (qr) {
+                data.classes = qr.getArray('records');
+                return data.classes;
+            });
+            sforce.connection.query('SELECT Id, Name FROM ApexClass', callback);
+        }
+    },
+    getTestQueueItem: function (args) {
+        var id = args.id,
+            soql = 'SELECT Status, ExtendedStatus FROM ApexTestQueueItem WHERE Id = \'' + id + '\'',
+            callback;
+        callback = this.createCallback({onSuccess: function (qr) {
+            var r = qr.getArray('records')[0];
+            if (r && ['Completed', 'Failed', 'Aborted'].indexOf(r.Status) >= 0) {
+                args.onSuccess(qr);
+            } else {
+                setTimeout(query, 2000);
+            }
+        }});
+        function query() {
+            sforce.connection.query(soql, callback);
+        }
+        query();
+    },
+    getTestLog: function (args) {
+        var queueItemId = args.queueItemId,
+            soql = 'SELECT ApexLogId FROM ApexTestResult WHERE QueueItemId = \'' + queueItemId + '\'',
+            callback;
+        sforce.connection.query(soql, this.createCallback({
+            onSuccess: function (qr) {
+                if (qr.getInt('size') <= 0) {
+                    args.onSuccess(null);
+                } else {
+                    var logId = qr.getArray('records')[0].ApexLogId;
+                    $.get('/apexdebug/traceDownload.apexp', {id: logId}, args.onSuccess);
+                }
+            }
+        }));
+        query();
     }
 };
