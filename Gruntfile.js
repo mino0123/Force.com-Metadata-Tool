@@ -1,8 +1,9 @@
 module.exports = function (grunt) {
     grunt.initConfig({
         jshint: {
-            beforeconcat: ['Gruntfile.js', 'src/**/*.js', '!src/intro.js', '!src/outro.js'],
-            afterconcat: ['forcedotcommetadatatool.user.js']
+            beforeconcat: ['src/**/*.js', '!src/intro.js', '!src/outro.js'],
+            afterconcat: ['forcedotcommetadatatool.user.js'],
+            gruntfile: ['Gruntfile.js']
         },
         concat: {
             options: {
@@ -46,12 +47,24 @@ module.exports = function (grunt) {
             }
         },
         watch: {
-            all: {
+            gruntfile: {
                 files: [
-                    'Gruntfile.js',
+                    'Gruntfile.js'
+                ],
+                tasks: ['jshint:gruntfile']
+            },
+            dev: {
+                files: [
                     'src/**/*.js'
                 ],
-                tasks: ['default']
+                tasks: ['jshint:beforeconcat', 'concat', 'jshint:afterconcat', 'copy']
+            },
+            test: {
+                files: [
+                    'src/**/*.js',
+                    'test/**/*.js'
+                ],
+                tasks: ['mocha']
             }
         },
         mocha: {
