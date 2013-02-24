@@ -12,8 +12,6 @@ module.exports = function (grunt) {
                     '// @id             ForceDotComMetadataTool\n' +
                     '// @name           ForceDotComMetadataTool\n' +
                     '// @version        0.0.1\n' +
-                    '// @namespace      \n' +
-                    '// @author         minoaw\n' +
                     '// @description    \n' +
                     '// @include        https://*.salesforce.com/*\n' +
                     '// @run-at         document-end\n' +
