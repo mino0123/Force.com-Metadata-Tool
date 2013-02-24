@@ -2,10 +2,11 @@
  * grunt-lib-phantomjs
  * http://gruntjs.com/
  *
- * Modified by Yuta Minowa
- *
  * Copyright (c) 2012 "Cowboy" Ben Alman, contributors
  * Licensed under the MIT license.
+ *
+ *
+ * Modified by Yuta Minowa
  */
 
 /*global phantom:true*/
