@@ -37,6 +37,7 @@ module.exports = function (grunt) {
                     'src/describe_global.js',
                     'src/describe_sobject.js',
                     'src/describe_metadata.js',
+                    'src/testrunner.js',
                     'src/list_metadata.js',
                     'src/deploy_retrieve.js',
                     'src/outro.js'
