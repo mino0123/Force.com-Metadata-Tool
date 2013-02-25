@@ -2,8 +2,6 @@
 // @id             ForceDotComMetadataTool
 // @name           ForceDotComMetadataTool
 // @version        0.0.1
-// @namespace      
-// @author         minoaw
 // @description    
 // @include        https://*.salesforce.com/*
 // @run-at         document-end
@@ -486,7 +484,7 @@ ScriptLoader.on('run', function () {
         ScriptLoader.trigger('loaded');
     } else {
         var p1, p2;
-        p1 = ScriptLoader.promise('/soap/ajax/26.0/connection.js');
+        p1 = ScriptLoader.promise('/soap/ajax/27.0/connection.js');
         p2 = ScriptLoader.promise('//github.com/mino0123/salesforce-metadata.js/raw/master/salesforce-metadata.js');
         $.when(p1, p2).then(function () {
             ScriptLoader.trigger('loaded');
