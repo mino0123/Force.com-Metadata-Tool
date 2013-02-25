@@ -1,16 +1,13 @@
 {
   "name": "Force.com-Metadata-Tool",
   "version": "0.0.1",
-  "scripts": {
-    "preinstall": "npm i -g grunt-cli"
-  },
   "devDependencies": {
-    "grunt": "~0.4.0rc7",
-    "grunt-contrib-jshint": "~0.1.1rc6",
-    "grunt-contrib-concat": "~0.1.2rc6",
-    "grunt-contrib-watch": "~0.2.0rc5",
-    "grunt-mocha": "git://github.com/kmiyashiro/grunt-mocha.git",
-    "grunt-lib-phantomjs": "~0.1.0",
-    "grunt-contrib-copy": "~0.4.0rc7"
+    "grunt": "0.4.0",
+    "grunt-contrib-jshint": "0.1.1",
+    "grunt-contrib-concat": "0.1.2",
+    "grunt-contrib-watch": "0.2.0",
+    "grunt-mocha": "0.2.2",
+    "grunt-lib-phantomjs": "0.1.0",
+    "grunt-contrib-copy": "0.4.0"
   }
 }
