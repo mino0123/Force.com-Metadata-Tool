@@ -92,6 +92,20 @@ module.exports = function (grunt) {
                     }
                 }())
             }
+        },
+        template: {
+            readme: {
+                src: 'readme.handlebar',
+                dest: 'README.md',
+                variables: {
+                    bookmarklet: grunt.file.read('./bookmarklet.min.js')
+                }
+            }
+        },
+        uglify: {
+            bookmarklet: {
+                files: {'bookmarklet.min.js': ['bookmarklet.js']}
+            }
         }
     });
 
@@ -100,12 +114,16 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-mocha');
+    grunt.loadNpmTasks('grunt-templater');
 
     var defaults = ['mocha', 'jshint:beforeconcat', 'concat', 'jshint:afterconcat'];
     if (grunt.config.data.copy.main.files.length > 0) {
         defaults.push('copy');
     }
     grunt.registerTask('default', defaults);
+
+    grunt.registerTask('readme', ['uglify:bookmarklet', 'template:readme']);
 
 };
