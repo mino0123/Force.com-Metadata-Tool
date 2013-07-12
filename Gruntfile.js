@@ -7,22 +7,7 @@ module.exports = function (grunt) {
         },
         concat: {
             options: {
-                banner:
-                    '// ==UserScript==\n' +
-                    '// @id             ForceDotComMetadataTool\n' +
-                    '// @name           ForceDotComMetadataTool\n' +
-                    '// @version        0.0.1\n' +
-                    '// @description    \n' +
-                    '// @include        https://*.salesforce.com/*\n' +
-                    '// @run-at         document-end\n' +
-                    '// @require        lib/jquery-1.8.3.min.js\n' +
-                    '// @require        lib/Hogan.js/hogan-2.0.0.min.js\n' +
-                    '// @require        lib/JSZip/jszip.js\n' +
-                    '// @require        lib/JSZip/jszip-load.js\n' +
-                    '// @require        lib/JSZip/jszip-inflate.js\n' +
-                    '// @require        lib/JSZip/jszip-deflate.js\n' +
-                    '// @noframes       \n' +
-                    '// ==/UserScript==\n\n'
+                banner: grunt.file.read('banner.txt')
             },
             dist: {
                 src : [
