@@ -13,7 +13,6 @@
 // @require        lib/JSZip/jszip-deflate.js
 // @noframes       
 // ==/UserScript==
-
 var unsafeWindow,
     GM_addStyle,
     sforce,
