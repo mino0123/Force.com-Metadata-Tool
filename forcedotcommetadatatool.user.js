@@ -483,7 +483,7 @@ ScriptLoader.on('run', function () {
         ScriptLoader.trigger('loaded');
     } else {
         var p1, p2;
-        p1 = ScriptLoader.promise('/soap/ajax/28.0/connection.js');
+        p1 = ScriptLoader.promise('/soap/ajax/29.0/connection.js');
         p2 = ScriptLoader.promise('//github.com/mino0123/salesforce-metadata.js/raw/master/salesforce-metadata.js');
         $.when(p1, p2).then(function () {
             ScriptLoader.trigger('loaded');
@@ -631,7 +631,7 @@ Data = MetadataTool.Data = {
                     }
                 }
             );
-            sforce.metadata.describeMetadata(25, callback);
+            sforce.metadata.describeMetadata(29, callback);
         }
     },
     getMetadataList: function (args) {
@@ -682,7 +682,7 @@ Data = MetadataTool.Data = {
         }
         var req, result;
         req = new sforce.RetrieveRequest();
-        req.apiVersion = "25.0";
+        req.apiVersion = "29.0";
         req.singlePackage = false;
         req.unpackaged = {
             types: [{name: typeName, members:members}]
@@ -715,7 +715,7 @@ Data = MetadataTool.Data = {
         var req, pack, zip, path,
             meta = args.meta;
         pack = new sforce.Package();
-        pack.version = 25;
+        pack.version = 29;
         pack.types = [{name: args.name, members: args.member}];
         path = 'src/' + args.dir + '/' + args.basename + '.' + args.ext;
         req = new sforce.DeployRequest();

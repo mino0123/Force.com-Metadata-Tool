@@ -97,7 +97,7 @@ Data = MetadataTool.Data = {
                     }
                 }
             );
-            sforce.metadata.describeMetadata(25, callback);
+            sforce.metadata.describeMetadata(29, callback);
         }
     },
     getMetadataList: function (args) {
@@ -148,7 +148,7 @@ Data = MetadataTool.Data = {
         }
         var req, result;
         req = new sforce.RetrieveRequest();
-        req.apiVersion = "25.0";
+        req.apiVersion = "29.0";
         req.singlePackage = false;
         req.unpackaged = {
             types: [{name: typeName, members:members}]
@@ -181,7 +181,7 @@ Data = MetadataTool.Data = {
         var req, pack, zip, path,
             meta = args.meta;
         pack = new sforce.Package();
-        pack.version = 25;
+        pack.version = 29;
         pack.types = [{name: args.name, members: args.member}];
         path = 'src/' + args.dir + '/' + args.basename + '.' + args.ext;
         req = new sforce.DeployRequest();
