@@ -242,7 +242,7 @@ Data = MetadataTool.Data = {
             callback;
         sforce.connection.query(soql, this.createCallback({
             onSuccess: function (qr) {
-                if (qr.getInt('size') <= 0) {
+                if (Number(qr.size) <= 0) {
                     args.onSuccess(null);
                 } else {
                     var records = qr.records;

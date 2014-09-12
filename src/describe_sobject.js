@@ -134,10 +134,10 @@ FieldList.columns = FieldList.Columns = [
         id: 'length',
         title: '&#x9577;&#x3055;',
         data: function (field) {
-            var digits = field.getInt('digits'),
-                precision = field.getInt('precision'),
-                scale = field.getInt('scale'),
-                length = field.getInt('length');
+            var digits = Number(field.digits),
+                precision = Number(field.precision),
+                scale = Number(field.scale),
+                length = Number(field.length);
             if (digits !== 0) {
                 return digits;
             } else if (precision !== 0) {
