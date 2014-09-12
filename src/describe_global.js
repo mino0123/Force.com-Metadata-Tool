@@ -13,7 +13,7 @@ DescribeGlobal.$.on('run', function (event) {
     function onEnd(gd, objects) {
         if (objects) {
             var metaHash = arrayToHash(objects, 'fullName');
-            gd.getArray('sobjects').forEach(function (so) {
+            gd.sobjects.forEach(function (so) {
                 var name = so.name,
                     nonamespace = name.replace(/^.*?__/, ''),
                     m = metaHash[name] || metaHash[nonamespace];
@@ -66,7 +66,7 @@ DescribeGlobal.$.on('remove', function () {
 });
 
 DescribeGlobal.Grouper = function (globalDescribe, config) {
-    this.sobjects = globalDescribe.getArray('sobjects');
+    this.sobjects = globalDescribe.sobjects;
     this.config = config;
 };
 
@@ -98,27 +98,27 @@ DescribeGlobal.Grouper.prototype.definitions = [
     {
         title: 'カスタム',
         matcher: function(sobject) {
-            return sobject.getBoolean('custom');
+            return sobject.custom === 'true';
         }
     },
     {
         title: '取引先',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Account/.test(sobject.name);
         }
     },
     {
         title: '取引先責任者',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Contact/.test(sobject.name);
         }
     },
     {
         title: 'リード',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Lead/.test(sobject.name);
         }
     },
@@ -126,7 +126,7 @@ DescribeGlobal.Grouper.prototype.definitions = [
         title: '商談/商品/価格表/契約/見積',
         matcher: function(sobject) {
             var name = sobject.name;
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/Opportunity/.test(name) || /Pricebook/.test(name) || /Product/.test(name) ||
                 /Asset/.test(name) || /Quote/.test(name) || /Contract/.test(name));
         }
@@ -134,35 +134,35 @@ DescribeGlobal.Grouper.prototype.definitions = [
     {
         title: 'キャンペーン',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Campaign/.test(sobject.name);
         }
     },
     {
         title: 'ケース/ソリューション',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/Case/.test(sobject.name) || /Solution/.test(sobject.name));
         }
     },
     {
         title: '活動',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/Activity/.test(sobject.name) || /Event/.test(sobject.name) || /Task/.test(sobject.name));
         }
     },
     {
         title: 'ユーザ/プロファイル/ロール',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/User/.test(sobject.name) || /Profile/.test(sobject.name) || /^Role/.test(sobject.name));
         }
     },
     {
         title: 'ドキュメント/コンテンツ',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/Document/.test(sobject.name) || /Content/.test(sobject.name) || /File/.test(sobject.name));
         }
     },
@@ -175,7 +175,7 @@ DescribeGlobal.Grouper.prototype.definitions = [
     {
         title: 'Apex',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Apex/.test(sobject.name);
         }
     },
@@ -183,7 +183,7 @@ DescribeGlobal.Grouper.prototype.definitions = [
         title: 'Chatter/コラボレーション',
         matcher: function(sobject) {
             var name = sobject.name;
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /^Chatter/.test(name) ||
                 /^Collaboration/.test(name);
         }
@@ -191,7 +191,7 @@ DescribeGlobal.Grouper.prototype.definitions = [
     {
         title: 'フィード',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Feed/.test(sobject.name);
         }
     },

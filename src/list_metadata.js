@@ -69,7 +69,7 @@ doc
                     if (!m.childXmlNames) {
                         return;
                     }
-                    m.getArray('childXmlNames').forEach(function (n) {
+                    m.childXmlNames.forEach(function (n) {
                         if (n === name) {
                             desc = $.extend(m);
                             desc.xmlName = n;

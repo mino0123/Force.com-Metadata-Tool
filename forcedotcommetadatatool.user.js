@@ -589,7 +589,7 @@ Data = MetadataTool.Data = {
     getSObjectHash: function (args) {
         var callback = this.createCallback(args, function (gd) {
             var ret = {};
-            gd.getArray('sobjects').forEach(function (so) {
+            gd.sobjects.forEach(function (so) {
                 ret[so.name] = so;
             });
             return ret;
@@ -667,7 +667,7 @@ Data = MetadataTool.Data = {
                 sforce.metadata.checkRetrieveStatus(id, callback);
             }
             function check(results) {
-                var done = results[0].getBoolean("done");
+                var done = results[0].done === 'true';
                 if (!done) {
                     setTimeout(function () {
                         sforce.metadata.checkStatus([results[0].id], check);
@@ -699,7 +699,7 @@ Data = MetadataTool.Data = {
                 sforce.metadata.checkDeployStatus(id, callback);
             }
             function check(results) {
-                var done = results[0].getBoolean("done");
+                var done = results[0].done === 'true';
                 if (!done) {
                     setTimeout(function () {
                         sforce.metadata.checkStatus([results[0].id], check);
@@ -746,7 +746,7 @@ Data = MetadataTool.Data = {
             args.onSuccess(classes);
         } else {
             callback = this.createCallback(args, function (qr) {
-                data.classes = qr.getArray('records');
+                data.classes = qr.records;
                 return data.classes;
             });
             sforce.connection.query('SELECT Id, Name FROM ApexClass', callback);
@@ -757,7 +757,8 @@ Data = MetadataTool.Data = {
             soql = 'SELECT Status, ExtendedStatus FROM ApexTestQueueItem WHERE Id = \'' + id + '\'',
             callback;
         callback = this.createCallback({onSuccess: function (qr) {
-            var r = qr.getArray('records')[0];
+            var records = qr.records;
+            var r = Array.isArray(records) ? records[0] : records;
             if (r && ['Completed', 'Failed', 'Aborted'].indexOf(r.Status) >= 0) {
                 args.onSuccess(qr);
             } else {
@@ -778,7 +779,9 @@ Data = MetadataTool.Data = {
                 if (qr.getInt('size') <= 0) {
                     args.onSuccess(null);
                 } else {
-                    var logId = qr.getArray('records')[0].ApexLogId;
+                    var records = qr.records;
+                    var record = Array.isArray(records) ? records[0] : records;
+                    var logId = record.ApexLogId;
                     $.get('/apexdebug/traceDownload.apexp', {id: logId}, args.onSuccess);
                 }
             }
@@ -937,7 +940,7 @@ DescribeGlobal.$.on('run', function (event) {
     function onEnd(gd, objects) {
         if (objects) {
             var metaHash = arrayToHash(objects, 'fullName');
-            gd.getArray('sobjects').forEach(function (so) {
+            gd.sobjects.forEach(function (so) {
                 var name = so.name,
                     nonamespace = name.replace(/^.*?__/, ''),
                     m = metaHash[name] || metaHash[nonamespace];
@@ -990,7 +993,7 @@ DescribeGlobal.$.on('remove', function () {
 });
 
 DescribeGlobal.Grouper = function (globalDescribe, config) {
-    this.sobjects = globalDescribe.getArray('sobjects');
+    this.sobjects = globalDescribe.sobjects;
     this.config = config;
 };
 
@@ -1022,27 +1025,27 @@ DescribeGlobal.Grouper.prototype.definitions = [
     {
         title: 'カスタム',
         matcher: function(sobject) {
-            return sobject.getBoolean('custom');
+            return sobject.custom === 'true';
         }
     },
     {
         title: '取引先',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Account/.test(sobject.name);
         }
     },
     {
         title: '取引先責任者',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Contact/.test(sobject.name);
         }
     },
     {
         title: 'リード',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Lead/.test(sobject.name);
         }
     },
@@ -1050,7 +1053,7 @@ DescribeGlobal.Grouper.prototype.definitions = [
         title: '商談/商品/価格表/契約/見積',
         matcher: function(sobject) {
             var name = sobject.name;
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/Opportunity/.test(name) || /Pricebook/.test(name) || /Product/.test(name) ||
                 /Asset/.test(name) || /Quote/.test(name) || /Contract/.test(name));
         }
@@ -1058,35 +1061,35 @@ DescribeGlobal.Grouper.prototype.definitions = [
     {
         title: 'キャンペーン',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Campaign/.test(sobject.name);
         }
     },
     {
         title: 'ケース/ソリューション',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/Case/.test(sobject.name) || /Solution/.test(sobject.name));
         }
     },
     {
         title: '活動',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/Activity/.test(sobject.name) || /Event/.test(sobject.name) || /Task/.test(sobject.name));
         }
     },
     {
         title: 'ユーザ/プロファイル/ロール',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/User/.test(sobject.name) || /Profile/.test(sobject.name) || /^Role/.test(sobject.name));
         }
     },
     {
         title: 'ドキュメント/コンテンツ',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 (/Document/.test(sobject.name) || /Content/.test(sobject.name) || /File/.test(sobject.name));
         }
     },
@@ -1099,7 +1102,7 @@ DescribeGlobal.Grouper.prototype.definitions = [
     {
         title: 'Apex',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Apex/.test(sobject.name);
         }
     },
@@ -1107,7 +1110,7 @@ DescribeGlobal.Grouper.prototype.definitions = [
         title: 'Chatter/コラボレーション',
         matcher: function(sobject) {
             var name = sobject.name;
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /^Chatter/.test(name) ||
                 /^Collaboration/.test(name);
         }
@@ -1115,7 +1118,7 @@ DescribeGlobal.Grouper.prototype.definitions = [
     {
         title: 'フィード',
         matcher: function(sobject) {
-            return ! sobject.getBoolean('custom') &&
+            return sobject.custom !== 'true' &&
                 /Feed/.test(sobject.name);
         }
     },
@@ -1224,7 +1227,7 @@ FieldList.Field = function (values) {
 FieldList.$.off('render');
 FieldList.$.on('render', function (event) {
     var fields, columns, html, viewData;
-    fields = this.dr.getArray('fields');
+    fields = this.dr.fields;
     columns = FieldList.columns;
     viewData = {};
     viewData.name = this.dr.name;
@@ -1287,9 +1290,9 @@ FieldList.columns = FieldList.Columns = [
         id: 'required',
         title: '&#x5FC5;&#x9808;',
         data: function (field) {
-            var nillable = field.getBoolean('nillable'),
-                defaultedOnCreate = field.getBoolean('defaultedOnCreate'),
-                createable = field.getBoolean('createable');
+            var nillable = field.nillable === 'true',
+                defaultedOnCreate = field.defaultedOnCreate === 'true',
+                createable = field.createable === 'true';
             if (nillable || defaultedOnCreate || !createable) {
                 return '&#x2610;';
             }
@@ -1300,7 +1303,10 @@ FieldList.columns = FieldList.Columns = [
         id: 'referenceTo',
         title: '&#x53C2;&#x7167;&#x5148;',
         data: function (field) {
-            var arr = field.getArray('referenceTo');
+            var arr = field.referenceTo;
+            if (!Array.isArray(arr)) {
+                arr = [arr];
+            }
             return arr.join('<br />');
         }
     },
@@ -1308,7 +1314,7 @@ FieldList.columns = FieldList.Columns = [
         id: 'picklistValues',
         title: '&#x9078;&#x629E;&#x80A2;',
         data: function (field) {
-            var entries = field.getArray('picklistValues');
+            var entries = field.picklistValues;
             return entries.map(function (entry) {
                 var l = entry.label, v = entry.value;
                 if (l === v) {
@@ -1349,7 +1355,7 @@ ChildRelationships.$.on('render', function () {
     Data.getSObjectHash({onSuccess: function (soHash) {
         var viewData, children, html;
         viewData = $.extend({}, dr);
-        children = viewData.getArray('childRelationships');
+        children = viewData.childRelationships;
         children.forEach(function (rel) {
             rel.label = soHash[rel.childSObject].label;
         });
@@ -1536,7 +1542,10 @@ TestRunner.$.on('runtest', function (event, classId) {
 TestRunner.$.on('checkstatus', function (event, queueItemId) {
     var that = this;
     Data.getTestQueueItem({id: queueItemId, onSuccess: function (qr) {
-        var record = qr.getArray('records')[0];
+        var record = qr.records;
+        if (Array.isArray(record)) {
+            record = record[0];
+        }
         if (record.Status in {'Completed':1, 'Failed':1}) {
             that.$.trigger('showtestlog', queueItemId);
         }
@@ -1646,7 +1655,7 @@ doc
                     if (!m.childXmlNames) {
                         return;
                     }
-                    m.getArray('childXmlNames').forEach(function (n) {
+                    m.childXmlNames.forEach(function (n) {
                         if (n === name) {
                             desc = $.extend(m);
                             desc.xmlName = n;

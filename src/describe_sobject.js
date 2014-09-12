@@ -88,7 +88,7 @@ FieldList.Field = function (values) {
 FieldList.$.off('render');
 FieldList.$.on('render', function (event) {
     var fields, columns, html, viewData;
-    fields = this.dr.getArray('fields');
+    fields = this.dr.fields;
     columns = FieldList.columns;
     viewData = {};
     viewData.name = this.dr.name;
@@ -151,9 +151,9 @@ FieldList.columns = FieldList.Columns = [
         id: 'required',
         title: '&#x5FC5;&#x9808;',
         data: function (field) {
-            var nillable = field.getBoolean('nillable'),
-                defaultedOnCreate = field.getBoolean('defaultedOnCreate'),
-                createable = field.getBoolean('createable');
+            var nillable = field.nillable === 'true',
+                defaultedOnCreate = field.defaultedOnCreate === 'true',
+                createable = field.createable === 'true';
             if (nillable || defaultedOnCreate || !createable) {
                 return '&#x2610;';
             }
@@ -164,7 +164,10 @@ FieldList.columns = FieldList.Columns = [
         id: 'referenceTo',
         title: '&#x53C2;&#x7167;&#x5148;',
         data: function (field) {
-            var arr = field.getArray('referenceTo');
+            var arr = field.referenceTo;
+            if (!Array.isArray(arr)) {
+                arr = [arr];
+            }
             return arr.join('<br />');
         }
     },
@@ -172,7 +175,7 @@ FieldList.columns = FieldList.Columns = [
         id: 'picklistValues',
         title: '&#x9078;&#x629E;&#x80A2;',
         data: function (field) {
-            var entries = field.getArray('picklistValues');
+            var entries = field.picklistValues;
             return entries.map(function (entry) {
                 var l = entry.label, v = entry.value;
                 if (l === v) {
@@ -213,7 +216,7 @@ ChildRelationships.$.on('render', function () {
     Data.getSObjectHash({onSuccess: function (soHash) {
         var viewData, children, html;
         viewData = $.extend({}, dr);
-        children = viewData.getArray('childRelationships');
+        children = viewData.childRelationships;
         children.forEach(function (rel) {
             rel.label = soHash[rel.childSObject].label;
         });

@@ -55,7 +55,7 @@ Data = MetadataTool.Data = {
     getSObjectHash: function (args) {
         var callback = this.createCallback(args, function (gd) {
             var ret = {};
-            gd.getArray('sobjects').forEach(function (so) {
+            gd.sobjects.forEach(function (so) {
                 ret[so.name] = so;
             });
             return ret;
@@ -133,7 +133,7 @@ Data = MetadataTool.Data = {
                 sforce.metadata.checkRetrieveStatus(id, callback);
             }
             function check(results) {
-                var done = results[0].getBoolean("done");
+                var done = results[0].done === 'true';
                 if (!done) {
                     setTimeout(function () {
                         sforce.metadata.checkStatus([results[0].id], check);
@@ -165,7 +165,7 @@ Data = MetadataTool.Data = {
                 sforce.metadata.checkDeployStatus(id, callback);
             }
             function check(results) {
-                var done = results[0].getBoolean("done");
+                var done = results[0].done === 'true';
                 if (!done) {
                     setTimeout(function () {
                         sforce.metadata.checkStatus([results[0].id], check);
@@ -212,7 +212,7 @@ Data = MetadataTool.Data = {
             args.onSuccess(classes);
         } else {
             callback = this.createCallback(args, function (qr) {
-                data.classes = qr.getArray('records');
+                data.classes = qr.records;
                 return data.classes;
             });
             sforce.connection.query('SELECT Id, Name FROM ApexClass', callback);
@@ -223,7 +223,8 @@ Data = MetadataTool.Data = {
             soql = 'SELECT Status, ExtendedStatus FROM ApexTestQueueItem WHERE Id = \'' + id + '\'',
             callback;
         callback = this.createCallback({onSuccess: function (qr) {
-            var r = qr.getArray('records')[0];
+            var records = qr.records;
+            var r = Array.isArray(records) ? records[0] : records;
             if (r && ['Completed', 'Failed', 'Aborted'].indexOf(r.Status) >= 0) {
                 args.onSuccess(qr);
             } else {
@@ -244,7 +245,9 @@ Data = MetadataTool.Data = {
                 if (qr.getInt('size') <= 0) {
                     args.onSuccess(null);
                 } else {
-                    var logId = qr.getArray('records')[0].ApexLogId;
+                    var records = qr.records;
+                    var record = Array.isArray(records) ? records[0] : records;
+                    var logId = record.ApexLogId;
                     $.get('/apexdebug/traceDownload.apexp', {id: logId}, args.onSuccess);
                 }
             }

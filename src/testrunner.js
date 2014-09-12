@@ -38,7 +38,10 @@ TestRunner.$.on('runtest', function (event, classId) {
 TestRunner.$.on('checkstatus', function (event, queueItemId) {
     var that = this;
     Data.getTestQueueItem({id: queueItemId, onSuccess: function (qr) {
-        var record = qr.getArray('records')[0];
+        var record = qr.records;
+        if (Array.isArray(record)) {
+            record = record[0];
+        }
         if (record.Status in {'Completed':1, 'Failed':1}) {
             that.$.trigger('showtestlog', queueItemId);
         }
