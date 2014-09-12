@@ -1,4 +1,7 @@
+var fs = require('fs');
+
 module.exports = function (grunt) {
+
     grunt.initConfig({
         jshint: {
             beforeconcat: ['src/**/*.js', '!src/intro.js', '!src/outro.js'],
@@ -60,8 +63,14 @@ module.exports = function (grunt) {
             }
         },
         screenshot: {
-            options: grunt.file.readJSON('.screenshot'),
-                     //{loginUrl, username, password, targetUrl}
+            options: function () {
+                //{loginUrl, username, password, targetUrl}
+                if (fs.existsSync('.screenshot')) {
+                    return grunt.file.readJSON('.screenshot');
+                } else {
+                    return {};
+                }
+            },
             dist: {
                 dest: 'README.md'
             }
