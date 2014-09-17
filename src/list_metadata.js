@@ -17,7 +17,7 @@ ListMetadata.$.on('run', function (event, desc) {
         metadataArr.forEach(function (m) {
             var basename = m.fileName.match(new RegExp('/.*?\\.'))[0];
             basename = basename.substring(1, basename.length - 1);
-            m.lastModifiedDate = dateTimeToString(m.getDateTime('lastModifiedDate'));
+            m.lastModifiedDate = dateTimeToString(new Date(m.lastModifiedDate));
             m.retrieve =
                 $('<a />')
                     .attr({
