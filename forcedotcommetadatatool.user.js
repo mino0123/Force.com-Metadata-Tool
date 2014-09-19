@@ -1314,7 +1314,7 @@ FieldList.columns = FieldList.Columns = [
         id: 'picklistValues',
         title: '&#x9078;&#x629E;&#x80A2;',
         data: function (field) {
-            var entries = field.picklistValues;
+            var entries = field.picklistValues || [];
             return entries.map(function (entry) {
                 var l = entry.label, v = entry.value;
                 if (l === v) {
